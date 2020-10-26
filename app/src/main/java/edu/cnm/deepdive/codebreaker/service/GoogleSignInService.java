@@ -46,7 +46,7 @@ public class GoogleSignInService {
         .addOnSuccessListener((account) -> this.account = account);
   }
 
-  private void startSignIn(Activity activity, int requestCode ) {
+  public void startSignIn(Activity activity, int requestCode) {
     account = null;
     Intent intent = client.getSignInIntent();
     activity.startActivityForResult(intent, requestCode);
