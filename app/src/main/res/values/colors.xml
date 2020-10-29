@@ -11,5 +11,6 @@
   <color name="blueSwatch">#FF0000FF</color>
   <color name="indigoSwatch">#FF4B0082</color>
   <color name="violetSwatch">#FFEE82EE</color>
+  <color name="ic_codebreaker_background">#F52F76</color>
 
 </resources>
