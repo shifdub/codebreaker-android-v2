@@ -22,6 +22,9 @@ public class Game {
 
   private String code;
 
+  @ColumnInfo(name = "code_length", index = true)
+  private int codeLength;
+
   @ColumnInfo(name = "match_key", index = true)
   private UUID matchKey;
 
@@ -73,4 +76,11 @@ public class Game {
     this.started = started;
   }
 
+  public int getCodeLength() {
+    return codeLength;
+  }
+
+  public void setCodeLength(int codeLength) {
+    this.codeLength = codeLength;
+  }
 }

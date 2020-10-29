@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 
 public class ScoreSummary {
 
+
   @ColumnInfo(name = "code_length")
   private int codeLength;
 
