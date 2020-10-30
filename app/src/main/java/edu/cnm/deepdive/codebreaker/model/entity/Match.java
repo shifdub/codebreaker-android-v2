@@ -6,15 +6,14 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
-import androidx.room.TypeConverters;
 import java.util.Date;
 import java.util.UUID;
 
 
 @SuppressWarnings("NotNullFieldNotInitialized")
 @Entity(
-    indices ={
-        @Index( value = {"match_key"}, unique = true)
+    indices = {
+        @Index(value = {"match_key"}, unique = true)
     }
 )
 public class Match {
@@ -36,8 +35,8 @@ public class Match {
   private Date deadline;
 
   @NonNull
-  @ColumnInfo (index = true)
-  private State outcome;
+  @ColumnInfo(index = true)
+  private State state;
 
   public long getId() {
     return id;
@@ -75,23 +74,26 @@ public class Match {
   }
 
   @NonNull
-  public State getOutcome() {
-    return outcome;
+  public State getState() {
+    return state;
   }
 
-  public void setOutcome(@NonNull State outcome) {
-    this.outcome = outcome;
+  public void setState(@NonNull State state) {
+    this.state = state;
   }
 
-  @TypeConverter
-  public static Integer stateToInteger (State value){
-    return (value != null) ? value.ordinal() : null;
-  }
-  @TypeConverter
-  public static State integerToState(Integer value) {
-    return (value != null) ? State.values()[value] : null;
-  }
+
   public enum State {
- IN_PROGRESS, WON, LOST, FORFEITED;
- }
+    IN_PROGRESS, WON, LOST, FORFEITED;
+
+    @TypeConverter
+    public static Integer stateToInteger(State value) {
+      return (value != null) ? value.ordinal() : null;
+    }
+
+    @TypeConverter
+    public static State integerToState(Integer value) {
+      return (value != null) ? State.values()[value] : null;
+    }
+  }
 }

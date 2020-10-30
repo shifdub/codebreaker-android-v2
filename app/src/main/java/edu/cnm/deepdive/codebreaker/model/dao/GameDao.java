@@ -1,6 +1,5 @@
 package edu.cnm.deepdive.codebreaker.model.dao;
 
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -24,32 +23,28 @@ public interface GameDao {
           + "ORDER BY gm.started DESC, gs.submitted DESC";
 
   String INCOMPLETE_GAMES_QUERY =
-      "SELECT DISTINCT "
+      "SELECT "
           + "gm.* "
           + "FROM Game AS gm "
           + "LEFT JOIN Guess AS gs ON gs.game_id = gm.game_id AND gs.correct = gm.code_length "
-          + "WHERE gs.guess_id Is Null "
+          + "WHERE gs.guess_id IS NULL "
           + "ORDER BY gm.started ASC";
-
 
   String INCOMPLETE_MATCH_GAMES_QUERY =
-      "SELECT DISTINCT "
+      "SELECT "
           + "gm.* "
           + "FROM Game AS gm "
           + "LEFT JOIN Guess AS gs ON gs.game_id = gm.game_id AND gs.correct = gm.code_length "
-          + "WHERE gs.guess_id Is Null  AND gm.match_key IS NOT NULL "
+          + "WHERE gs.guess_id IS NULL AND gm.match_id IS NOT NULL "
           + "ORDER BY gm.started ASC";
-
 
   String INCOMPLETE_GAMES_IN_MATCH_QUERY =
-      "SELECT DISTINCT "
+      "SELECT "
           + "gm.* "
           + "FROM Game AS gm "
           + "LEFT JOIN Guess AS gs ON gs.game_id = gm.game_id AND gs.correct = gm.code_length "
-          + "WHERE gs.guess_id Is Null  AND gm.match_key = :key "
+          + "WHERE gs.guess_id IS NULL AND gm.match_id = :id "
           + "ORDER BY gm.started ASC";
-
-
 
   @Insert
   Single<Long> insert(Game game);
@@ -75,8 +70,8 @@ public interface GameDao {
   @Query("SELECT * FROM Game WHERE game_key = :key")
   LiveData<Game> select(UUID key);
 
-  @Query("SELECT * FROM Game WHERE match_key = :key")
-  LiveData<List<Game>> selectInMatch(UUID key);
+  @Query("SELECT * FROM Game WHERE match_id = :id")
+  LiveData<List<Game>> selectInMatch(long id);
 
   @Query(COMPLETED_GAMES_QUERY)
   LiveData<List<Game>> selectComplete();
@@ -88,8 +83,6 @@ public interface GameDao {
   LiveData<List<Game>> selectIncompleteInMatches();
 
   @Query(INCOMPLETE_GAMES_IN_MATCH_QUERY)
-  LiveData<List<Game>> selectIncompleteINMatch(UUID key);
-
+  LiveData<List<Game>> selectIncompleteInMatch(long id);
 
 }
-

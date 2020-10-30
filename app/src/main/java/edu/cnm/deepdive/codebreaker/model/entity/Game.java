@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.UUID;
 
 
+
 @Entity(
     indices = {
         @Index(value = {"game_key"}, unique = true)
