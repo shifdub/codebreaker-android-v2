@@ -1,3 +1,4 @@
+
 package edu.cnm.deepdive.codebreaker.model.pojo;
 
 import androidx.room.ColumnInfo;
