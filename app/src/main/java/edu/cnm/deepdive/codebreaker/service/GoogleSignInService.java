@@ -39,18 +39,13 @@ public class GoogleSignInService {
     return InstanceHolder.INSTANCE;
 
   }
-
-  public GoogleSignInAccount getAccount() {
-    return account;
-  }
-
-  public Single<GoogleSignInAccount> refresh(){
+  public Single<GoogleSignInAccount> refresh() {
     return Single.create((emitter) ->
-      client.silentSignIn()
-        .addOnSuccessListener(emitter::onSuccess)
-        .addOnFailureListener(emitter::onError)
+        client.silentSignIn()
+            .addOnSuccessListener(this::setAccount)
+            .addOnSuccessListener(emitter::onSuccess)
+            .addOnFailureListener(emitter::onError)
     );
-
   }
 
   public void startSignIn(Activity activity, int requestCode) {
