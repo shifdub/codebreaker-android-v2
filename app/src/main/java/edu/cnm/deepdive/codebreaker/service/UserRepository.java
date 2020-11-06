@@ -1,7 +1,6 @@
 package edu.cnm.deepdive.codebreaker.service;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import edu.cnm.deepdive.codebreaker.model.dao.UserDao;
@@ -48,8 +47,8 @@ public class UserRepository {
 
   public Single<User> getServerUserProfile() {
     return signInService.refresh()
+        .observeOn(Schedulers.io())
         .flatMap((account) -> webService.getProfile(getBearerToken(account.getIdToken()))
-            .subscribeOn(Schedulers.io())
             .flatMap((user) -> userDao.selectByOauthKey(account.getId())
                 .flatMap((localUser) -> {
                   localUser.setDisplayName(user.getDisplayName());
@@ -57,10 +56,8 @@ public class UserRepository {
                       .map((count) -> localUser);
                 })
             )
-        )
-        .subscribeOn(Schedulers.io());
+        );
   }
-
 
   private String getBearerToken(String idToken) {
     return String.format("Bearer %s", idToken);
