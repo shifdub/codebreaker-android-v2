@@ -7,35 +7,52 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.AppBarConfiguration.Builder;
 import androidx.navigation.ui.NavigationUI;
+import com.google.android.material.navigation.NavigationView;
 import edu.cnm.deepdive.codebreaker.R;
+import edu.cnm.deepdive.codebreaker.databinding.ActivityNavigationBinding;
 import edu.cnm.deepdive.codebreaker.service.GoogleSignInService;
 import edu.cnm.deepdive.codebreaker.viewmodel.MainViewModel;
 
-public class MainActivity extends AppCompatActivity {
+public class NavigationActivity extends AppCompatActivity {
 
-  private MainViewModel viewModel;
-  private NavOptions navOptions;
+  private ActivityNavigationBinding binding;
+  private AppBarConfiguration appBarConfig;
   private NavController navController;
 
+  @SuppressWarnings("ConstantConditions")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    setupViewModel();
-    setupNavigation();
+    binding = ActivityNavigationBinding.inflate(getLayoutInflater());
+    setContentView(binding.getRoot());
+    setSupportActionBar(binding.appBarLayout.toolbar);
+    DrawerLayout drawer = binding.drawerLayout;
+    NavigationView navigationView = binding.navView;
+    setupNavigation(drawer, navigationView);
+  }
+
+  private void setupNavigation(DrawerLayout drawer, NavigationView navigationView) {
+    appBarConfig = new Builder(
+        R.id.navigation_game, R.id.navigation_summary, R.id.navigation_settings)
+        .setOpenableLayout(drawer)
+        .build();
+    navController = ((NavHostFragment) getSupportFragmentManager()
+        .findFragmentById(R.id.nav_host_fragment)).getNavController();
+    NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
+    NavigationUI.setupWithNavController(navigationView, navController);
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.main_options, menu);
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.navigation, menu);
     return true;
   }
 
@@ -55,29 +72,17 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   public boolean onSupportNavigateUp() {
-    onBackPressed();
-    return true;
+    return NavigationUI.navigateUp(navController, appBarConfig)
+        || super.onSupportNavigateUp();
   }
 
   private void setupViewModel() {
-    viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+    MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
     viewModel.getThrowable().observe(this, (throwable) -> {
       if (throwable != null) {
         Toast.makeText(this, throwable.getLocalizedMessage(), Toast.LENGTH_LONG).show();
       }
     });
-  }
-
-  private void setupNavigation() {
-    AppBarConfiguration appBarConfiguration =
-        new AppBarConfiguration.Builder(R.id.navigation_game, R.id.navigation_settings)
-            .build();
-    Toolbar toolbar = findViewById(R.id.toolbar);
-    setSupportActionBar(toolbar);
-    //noinspection ConstantConditions
-    navController = ((NavHostFragment) getSupportFragmentManager()
-        .findFragmentById(R.id.nav_host_fragment)).getNavController();
-    NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
   }
 
   private void logout() {
