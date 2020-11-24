@@ -42,6 +42,7 @@ public interface CodebreakerWebService {
     static {
       Gson gson = new GsonBuilder()
           .excludeFieldsWithoutExposeAnnotation()
+          .setDateFormat("yyyy-mm-dd'T'HH:mm:ss.SSSZ")
           .create();
       HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
       interceptor.setLevel(BuildConfig.DEBUG ? Level.BODY : Level.NONE);
@@ -58,5 +59,4 @@ public interface CodebreakerWebService {
     }
 
   }
-
 }
